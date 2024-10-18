@@ -1,15 +1,15 @@
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
-from google_play_scraper import Sort, reviews
+from google_play_scraper import reviews
 
 
-# Google Sheets setup (a JSON key file from Google API Console)
+# Google Sheets setup
 scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
-credentials = ServiceAccountCredentials.from_json_keyfile_name('credentials.json', scope)
+credentials = ServiceAccountCredentials.from_json_keyfile_name('credentials.json', scope)  # A key file from Google API Console
 client = gspread.authorize(credentials)
 
 # Open the Google Sheet
-sheet = client.open('GooglePlay Reviews').sheet1  # Opens the first sheet
+sheet = client.open('GooglePlay Reviews').sheet1
 
 package_name = 'com.ichi2.anki'
 
@@ -17,20 +17,17 @@ package_name = 'com.ichi2.anki'
 result, continuation_token = reviews(
     package_name,
     lang='en',
-    # country='us',
-    # sort=Sort.NEWEST,
-    count=1,  # Number of reviews per request
-    # continuation_token=continuation_token  # Token to fetch the next page of reviews
+    count=1000,  # Number of reviews per request
     )
 
-# Extract stars, text, and date for the reviews
+# Extract stars, text, and date for each review and save to Google Sheets
 if result:
-    stars, text, date = result[0]['score'], result[0]['content'], result[0]['at']
+    for review in result:
+        stars, text, date = review['score'], review['content'], review['at']
 
-    # Save the review data into Google Sheets
-    # Append a row to the sheet with stars, review text, and date
-    sheet.append_row([stars, text, str(date)])
+        # Append a row to the sheet with stars, review text, and date
+        sheet.append_row([stars, text, str(date)])
 
-    print("Review saved to Google Sheets!")
+    print(f"{len(result)} reviews saved to Google Sheets!")
 else:
     print("No reviews found")
