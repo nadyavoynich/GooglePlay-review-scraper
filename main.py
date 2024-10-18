@@ -5,10 +5,10 @@ from google_play_scraper import Sort, reviews
 
 # Google Sheets setup (a JSON key file from Google API Console)
 scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
-credentials = ServiceAccountCredentials.from_json_keyfile_name('path_to_your_credentials.json', scope)
+credentials = ServiceAccountCredentials.from_json_keyfile_name('credentials.json', scope)
 client = gspread.authorize(credentials)
 
-# Open the Google Sheet (replace 'your_google_sheet_name' with the actual name)
+# Open the Google Sheet
 sheet = client.open('GooglePlay Reviews').sheet1  # Opens the first sheet
 
 package_name = 'com.ichi2.anki'
