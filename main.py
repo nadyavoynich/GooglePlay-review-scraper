@@ -1,3 +1,7 @@
+import requests.exceptions
+from json.decoder import JSONDecodeError
+requests.exceptions.JSONDecodeError = JSONDecodeError
+
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 from google_play_scraper import reviews
@@ -12,7 +16,7 @@ client = gspread.authorize(credentials)
 sheet = client.open('GooglePlay Reviews').sheet1
 
 # Fetch reviews
-package_name = 'com.ichi2.anki'
+package_name = 'com.studysmarter'
 result, continuation_token = reviews(
     package_name,
     lang='en',
